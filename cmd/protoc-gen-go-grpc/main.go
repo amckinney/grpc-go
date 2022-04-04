@@ -40,7 +40,17 @@ import (
 
 const version = "1.2.0"
 
-var requireUnimplemented *bool
+var (
+	// By default, the plugin will assume that the generated Go
+	// types exist alongside the protoc-gen-go-grpc code (in the same
+	// package).
+	//
+	// If set, the *protogen.GeneratedFile will the Go types are
+	// imported from the "go_package" (or -M flags), rather than
+	// assumed to be in the same location.
+	externalGoTypes      *bool
+	requireUnimplemented *bool
+)
 
 func main() {
 	showVersion := flag.Bool("version", false, "print the version and exit")
@@ -51,6 +61,7 @@ func main() {
 	}
 
 	var flags flag.FlagSet
+	externalGoTypes = flags.Bool("external_go_types", false, "set to true to import the Go types from another package")
 	requireUnimplemented = flags.Bool("require_unimplemented_servers", true, "set to false to match legacy behavior")
 
 	protogen.Options{
